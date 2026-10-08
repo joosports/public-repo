@@ -12,6 +12,7 @@ The profile provides:
 - Responsive desktop and mobile layouts.
 - An accessible photo lightbox with keyboard, button, and touch navigation.
 - Four-page US Letter printing with fixed JOOSPORTS headers and footers.
+- Open Graph, X/Twitter, and structured profile metadata with a branded 1200×630 social preview.
 
 The site is deployed through GitHub Actions to GitHub Pages:
 

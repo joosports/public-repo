@@ -1,14 +1,19 @@
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
+import json
 import re
 import sys
 
 
 ROOT = Path(__file__).resolve().parents[1]
 PROFILE = ROOT / "tse-long-tin-player-profile.html"
+INDEX = ROOT / "index.html"
 IMAGE_DIRECTORY = ROOT / "img" / "tse-long-tin"
 IMAGE_NAME = re.compile(r"^tse-long-tin-[a-z0-9]+(?:-[a-z0-9]+)*\.(?:jpg|png)$")
+PREVIEW = ROOT / "assets" / "tse-long-tin-social-preview.png"
+PROFILE_URL = "https://joosports.github.io/public-repo/tse-long-tin-player-profile.html"
+PREVIEW_URL = "https://joosports.github.io/public-repo/assets/tse-long-tin-social-preview.png"
 
 
 class ProfileParser(HTMLParser):
@@ -40,9 +45,17 @@ def local_path(reference: str) -> Path | None:
     return ROOT / unquote(parsed.path)
 
 
+def png_dimensions(path: Path) -> tuple[int, int] | None:
+    header = path.read_bytes()[:24]
+    if len(header) != 24 or header[:8] != b"\x89PNG\r\n\x1a\n":
+        return None
+    return int.from_bytes(header[16:20], "big"), int.from_bytes(header[20:24], "big")
+
+
 def main() -> int:
     errors: list[str] = []
     profile_source = PROFILE.read_text(encoding="utf-8")
+    index_source = INDEX.read_text(encoding="utf-8")
     language_source = (ROOT / "assets" / "tse-long-tin-profile.js").read_text(encoding="utf-8")
 
     parser = ProfileParser()
@@ -90,6 +103,40 @@ def main() -> int:
     for forbidden in ("守備的ミッドフィールダー", "レギュラー登録", "成長・育成プロフィール"):
         if forbidden in language_source:
             errors.append(f"Literal Japanese wording remains: {forbidden}")
+
+    required_metadata = (
+        '<meta property="og:type" content="profile">',
+        '<meta name="twitter:card" content="summary_large_image">',
+        f'<link rel="canonical" href="{PROFILE_URL}">',
+        f'<meta property="og:image" content="{PREVIEW_URL}">',
+        '<meta property="og:image:width" content="1200">',
+        '<meta property="og:image:height" content="630">',
+    )
+    for markup in required_metadata:
+        if markup not in profile_source:
+            errors.append(f"Profile metadata is missing: {markup}")
+        if markup not in index_source:
+            errors.append(f"Index metadata is missing: {markup}")
+
+    if not PREVIEW.exists():
+        errors.append("Social preview image is missing")
+    elif png_dimensions(PREVIEW) != (1200, 630):
+        errors.append(f"Social preview must be 1200×630, found {png_dimensions(PREVIEW)}")
+
+    structured_data = re.search(
+        r'<script type="application/ld\+json">\s*(.*?)\s*</script>',
+        profile_source,
+        re.DOTALL,
+    )
+    if structured_data is None:
+        errors.append("ProfilePage structured data is missing")
+    else:
+        try:
+            schema = json.loads(structured_data.group(1))
+            if schema.get("@type") != "ProfilePage" or schema.get("mainEntity", {}).get("@type") != "Person":
+                errors.append("Structured data must describe a ProfilePage with a Person main entity")
+        except json.JSONDecodeError as error:
+            errors.append(f"Structured data is invalid JSON: {error}")
 
     if errors:
         print("Site validation failed:", file=sys.stderr)

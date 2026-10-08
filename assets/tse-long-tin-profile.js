@@ -147,8 +147,10 @@
 
   const metadata = {
     en: {
-      title: "Tse Long Tin | Player Profile",
-      description: "Professional football player profile for Tse Long Tin, prepared by JOOSPORTS.",
+      title: "Tse Long Tin (謝朗天) | Football Player Profile",
+      description: "Official JOOSPORTS football profile for Tse Long Tin (謝朗天), a 186 cm centre back representing Hong Kong U15 and Kitchee Sports Club U16.",
+      locale: "en_HK",
+      imageAlt: "Tse Long Tin football player profile — Hong Kong U15 and Kitchee U16",
       language: "Language",
       print: "Print / PDF",
       controls: "Display controls",
@@ -158,8 +160,10 @@
       next: "Next photo"
     },
     ja: {
-      title: "ツェ・ロンティン（謝朗天）｜選手プロフィール",
-      description: "JOOSPORTSが作成したツェ・ロンティン（謝朗天）のサッカー選手プロフィール。",
+      title: "ツェ・ロンティン（謝朗天）｜サッカー選手プロフィール",
+      description: "香港U-15代表および傑志U-16でプレーするセンターバック、ツェ・ロンティン（謝朗天）のJOOSPORTS公式選手プロフィール。",
+      locale: "ja_JP",
+      imageAlt: "ツェ・ロンティン（謝朗天）選手プロフィール — 香港U-15代表／傑志U-16",
       language: "言語",
       print: "印刷 / PDF",
       controls: "表示設定",
@@ -221,6 +225,13 @@
   const controls = document.querySelector(".site-controls");
   const printButton = document.querySelector("#print-button");
   const description = document.querySelector("meta[name='description']");
+  const openGraphTitle = document.querySelector("meta[property='og:title']");
+  const openGraphDescription = document.querySelector("meta[property='og:description']");
+  const openGraphLocale = document.querySelector("meta[property='og:locale']");
+  const openGraphImageAlt = document.querySelector("meta[property='og:image:alt']");
+  const twitterTitle = document.querySelector("meta[name='twitter:title']");
+  const twitterDescription = document.querySelector("meta[name='twitter:description']");
+  const twitterImageAlt = document.querySelector("meta[name='twitter:image:alt']");
 
   let activeLanguage = "en";
   let activePhotoIndex = 0;
@@ -265,6 +276,13 @@
     document.documentElement.lang = activeLanguage;
     document.title = copy.title;
     description.setAttribute("content", copy.description);
+    openGraphTitle.setAttribute("content", copy.title);
+    openGraphDescription.setAttribute("content", copy.description);
+    openGraphLocale.setAttribute("content", copy.locale);
+    openGraphImageAlt.setAttribute("content", copy.imageAlt);
+    twitterTitle.setAttribute("content", copy.title);
+    twitterDescription.setAttribute("content", copy.description);
+    twitterImageAlt.setAttribute("content", copy.imageAlt);
     languageSelect.value = activeLanguage;
     languageLabel.textContent = copy.language;
     languageSelect.setAttribute("aria-label", copy.language);
