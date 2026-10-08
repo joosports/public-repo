@@ -69,15 +69,74 @@ body.joosports-document {
 }
 
 @media screen and (max-width: 860px) {
+  html {
+    background: #eef1f3;
+  }
+
   body.joosports-document {
     padding: 0;
   }
 
   .joosports-page {
     width: 100%;
-    min-height: var(--joosports-page-height);
-    margin: 0;
+    min-height: 0;
+    margin: 0 auto 18px;
+    overflow: visible;
     box-shadow: none;
+  }
+
+  .joosports-page__letterhead {
+    width: 100%;
+    height: clamp(126px, 31vw, 168px);
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  .joosports-page__content {
+    padding:
+      clamp(154px, 37vw, 194px)
+      clamp(18px, 5vw, 36px)
+      30px;
+  }
+
+  .joosports-page__footer {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 5px 14px;
+    padding: 15px clamp(18px, 5vw, 36px) 18px;
+    background: #fff;
+    border-bottom: 8px solid var(--joosports-orange);
+  }
+
+  .joosports-page__footer span:nth-child(2) {
+    grid-row: 2;
+    grid-column: 1;
+  }
+
+  .joosports-page__footer span:last-child {
+    grid-row: 1 / span 2;
+    grid-column: 2;
+    align-self: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .joosports-page__letterhead {
+    height: 120px;
+  }
+
+  .joosports-page__content {
+    padding-top: 145px;
+  }
+
+  .joosports-page__footer {
+    font-size: 0.6rem;
   }
 }
 
@@ -101,6 +160,8 @@ body.joosports-document {
     height: var(--joosports-page-height);
     min-height: var(--joosports-page-height);
     margin: 0;
+    overflow: hidden;
+    break-after: page;
     page-break-after: always;
     box-shadow: none;
   }

@@ -25,6 +25,11 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Validate site structure and assets
+        run: |
+          python scripts/validate_site.py
+          node --check assets/tse-long-tin-profile.js
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 

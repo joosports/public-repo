@@ -6,6 +6,7 @@
   <meta name="description" content="Professional football player profile for Tse Long Tin, prepared by JOOSPORTS.">
   <title>Tse Long Tin | Player Profile</title>
   <link rel="stylesheet" href="assets/joosports-document.css">
+  <script src="assets/tse-long-tin-profile.js" defer></script>
   <style>
     :root {
       --ink: #17202a;
@@ -27,6 +28,10 @@
       font-family: "Aptos", "Segoe UI", Arial, sans-serif;
       font-size: 15px;
       line-height: 1.5;
+    }
+
+    html[lang="ja"] {
+      font-family: "Yu Gothic", "YuGothic", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
     }
 
     .joosports-page {
@@ -532,6 +537,46 @@
       background: var(--deep);
       border-radius: 4px;
       text-decoration: none;
+      cursor: zoom-in;
+    }
+
+    .photo-feature::after,
+    .photo-card::after {
+      position: absolute;
+      top: 9px;
+      right: 9px;
+      display: grid;
+      width: 30px;
+      height: 30px;
+      color: #fff;
+      content: "+";
+      font-size: 1.25rem;
+      font-weight: 400;
+      line-height: 1;
+      place-items: center;
+      background: rgba(12, 15, 18, 0.68);
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      border-radius: 50%;
+      opacity: 0;
+      transform: translateY(-3px);
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .photo-feature:hover::after,
+    .photo-card:hover::after,
+    .photo-feature:focus-visible::after,
+    .photo-card:focus-visible::after {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .photo-feature:focus-visible,
+    .photo-card:focus-visible,
+    .site-controls button:focus-visible,
+    .site-controls select:focus-visible,
+    .lightbox-button:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 3px;
     }
 
     .photo-feature {
@@ -611,6 +656,176 @@
       letter-spacing: 0.06em;
     }
 
+    .site-controls {
+      position: fixed;
+      z-index: 50;
+      top: 14px;
+      right: 16px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding: 7px;
+      color: #fff;
+      background: rgba(23, 25, 29, 0.93);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      box-shadow: 0 7px 22px rgba(23, 32, 42, 0.22);
+      backdrop-filter: blur(10px);
+    }
+
+    .site-controls label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+
+    .site-controls select,
+    .site-controls button {
+      min-height: 34px;
+      color: #fff;
+      font: inherit;
+      font-size: 0.76rem;
+      font-weight: 700;
+      background: #292d32;
+      border: 1px solid #555b62;
+      border-radius: 5px;
+    }
+
+    .site-controls select {
+      padding: 0 28px 0 10px;
+    }
+
+    .site-controls option {
+      color: #17191d;
+      background: #fff;
+    }
+
+    .site-controls button {
+      padding: 0 12px;
+      cursor: pointer;
+    }
+
+    .site-controls button:hover {
+      background: var(--accent-dark);
+      border-color: var(--accent);
+    }
+
+    .photo-lightbox {
+      width: min(1120px, calc(100vw - 32px));
+      max-width: none;
+      height: min(88vh, 820px);
+      max-height: none;
+      padding: 0;
+      overflow: hidden;
+      color: #fff;
+      background: #111417;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+    }
+
+    .photo-lightbox::backdrop {
+      background: rgba(4, 6, 8, 0.86);
+      backdrop-filter: blur(5px);
+    }
+
+    .lightbox-layout {
+      position: relative;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto;
+      width: 100%;
+      height: 100%;
+    }
+
+    .lightbox-figure {
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto;
+      min-height: 0;
+      margin: 0;
+    }
+
+    .lightbox-image-wrap {
+      display: grid;
+      min-height: 0;
+      padding: 54px 66px 16px;
+      place-items: center;
+    }
+
+    .lightbox-image {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 3px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.42);
+    }
+
+    .lightbox-caption {
+      min-height: 58px;
+      margin: 0;
+      padding: 14px 72px 16px;
+      color: #f0f2f4;
+      font-size: 0.92rem;
+      text-align: center;
+      background: #1a1e22;
+    }
+
+    .lightbox-count {
+      position: absolute;
+      top: 18px;
+      left: 20px;
+      color: #c8ced4;
+      font-size: 0.75rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .lightbox-button {
+      position: absolute;
+      z-index: 2;
+      display: grid;
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      color: #fff;
+      font-size: 1.45rem;
+      line-height: 1;
+      cursor: pointer;
+      place-items: center;
+      background: rgba(20, 24, 28, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.32);
+      border-radius: 50%;
+    }
+
+    .lightbox-button:hover {
+      background: var(--accent-dark);
+    }
+
+    .lightbox-close {
+      top: 14px;
+      right: 14px;
+    }
+
+    .lightbox-prev,
+    .lightbox-next {
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .lightbox-prev {
+      left: 14px;
+    }
+
+    .lightbox-next {
+      right: 14px;
+    }
+
+    body.lightbox-open {
+      overflow: hidden;
+    }
+
     @media screen and (max-width: 860px) {
       .hero,
       .intro-grid,
@@ -618,14 +833,149 @@
         grid-template-columns: 1fr;
       }
 
-      .player-photo {
-        display: none;
+      .hero {
+        grid-template-columns: minmax(0, 1fr) 88px;
+        gap: 20px;
       }
 
+      .player-photo {
+        width: 82px;
+        height: 82px;
+      }
+
+      .intro-grid,
+      .columns {
+        gap: 26px;
+      }
+
+      .page-heading,
+      .gallery-heading {
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .photo-feature {
+        height: clamp(260px, 66vw, 480px);
+      }
+
+      .photo-grid .photo-card,
+      .photo-milestones .photo-card {
+        height: clamp(210px, 43vw, 330px);
+      }
+
+      .photo-leads .photo-card {
+        height: clamp(300px, 60vw, 480px);
+      }
+    }
+
+    @media screen and (max-width: 600px) {
+      h1 {
+        font-size: clamp(2rem, 10vw, 2.5rem);
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .player-photo {
+        grid-row: 1;
+        width: 76px;
+        height: 76px;
+      }
+
+      .page-heading,
+      .gallery-heading {
+        display: block;
+      }
+
+      .page-heading > p,
+      .gallery-heading > p {
+        margin-top: 9px;
+      }
+
+      .fact-grid,
+      .photo-grid,
+      .photo-leads,
+      .photo-milestones {
+        grid-template-columns: 1fr;
+      }
+
+      .photo-grid .photo-card,
+      .photo-milestones .photo-card,
+      .photo-leads .photo-card {
+        height: clamp(245px, 70vw, 390px);
+      }
+
+      .site-controls {
+        top: 8px;
+        right: 8px;
+      }
+
+      .site-controls button {
+        width: 38px;
+        padding: 0;
+        font-size: 0;
+      }
+
+      .site-controls button::before {
+        content: "⎙";
+        font-size: 1.1rem;
+      }
+
+      .lightbox-image-wrap {
+        padding: 58px 14px 12px;
+      }
+
+      .lightbox-caption {
+        padding: 13px 52px 15px;
+        font-size: 0.82rem;
+      }
+
+      .lightbox-prev,
+      .lightbox-next {
+        top: auto;
+        bottom: 10px;
+        transform: none;
+      }
+
+      .lightbox-prev {
+        left: 8px;
+      }
+
+      .lightbox-next {
+        right: 8px;
+      }
+    }
+
+    @media print {
+      .site-controls,
+      .photo-lightbox,
+      .photo-feature::after,
+      .photo-card::after {
+        display: none !important;
+      }
+
+      .photo-feature,
+      .photo-card {
+        cursor: default;
+      }
+
+      .photo-feature:hover img,
+      .photo-card:hover img {
+        transform: none;
+      }
     }
   </style>
 </head>
 <body class="joosports-document">
+  <nav class="site-controls" aria-label="Display controls">
+    <label for="language-select">Language</label>
+    <select id="language-select" aria-label="Language">
+      <option value="en">English</option>
+      <option value="ja">日本語</option>
+    </select>
+    <button id="print-button" type="button">Print / PDF</button>
+  </nav>
   <main>
     <section class="joosports-page" aria-label="Player overview">
       <img class="joosports-page__letterhead" src="assets/joosports-letterhead.png" alt="" aria-hidden="true">
@@ -636,7 +986,7 @@
             <h1>Tse Long Tin <span class="chinese-name">謝朗天</span></h1>
             <p class="subtitle">Centre Back · Defensive Midfielder</p>
           </div>
-          <img class="player-photo" src="img/tse-long-tin/tse-long-tin-profile-pic.png" alt="Portrait of Tse Long Tin">
+          <img class="player-photo" src="img/tse-long-tin/tse-long-tin-headshot.png" alt="Portrait of Tse Long Tin">
         </header>
 
         <div class="intro-grid">
@@ -961,35 +1311,35 @@
           <p>Centre Back · Defensive Midfielder</p>
         </header>
 
-        <a class="photo-feature" href="img/tse-long-tin/3e95d3f8-1619-4ad9-91d6-c97aaf5f3d54.jpg" target="_blank" rel="noopener">
+        <a class="photo-feature" href="img/tse-long-tin/tse-long-tin-hong-kong-distribution.jpg" data-lightbox>
           <figure>
-            <img src="img/tse-long-tin/3e95d3f8-1619-4ad9-91d6-c97aaf5f3d54.jpg" alt="Tse Long Tin distributing the ball during a match">
+            <img src="img/tse-long-tin/tse-long-tin-hong-kong-distribution.jpg" alt="Tse Long Tin distributing the ball during a match">
             <figcaption>Composure and distribution from a deeper position</figcaption>
           </figure>
         </a>
 
         <div class="photo-grid">
-          <a class="photo-card" href="img/tse-long-tin/555eae2f-300d-4b8a-b621-7aea512a0356.jpg" target="_blank" rel="noopener">
+          <a class="photo-card" href="img/tse-long-tin/tse-long-tin-one-on-one-defending.jpg" data-lightbox>
             <figure>
-              <img src="img/tse-long-tin/555eae2f-300d-4b8a-b621-7aea512a0356.jpg" alt="Tse Long Tin in a one-on-one match situation">
+              <img src="img/tse-long-tin/tse-long-tin-one-on-one-defending.jpg" alt="Tse Long Tin in a one-on-one match situation">
               <figcaption>One-on-one engagement</figcaption>
             </figure>
           </a>
-          <a class="photo-card" href="img/tse-long-tin/d2f17683-6f69-483f-863d-10de466d4f8f.jpg" target="_blank" rel="noopener">
+          <a class="photo-card" href="img/tse-long-tin/tse-long-tin-ball-progression.jpg" data-lightbox>
             <figure>
-              <img src="img/tse-long-tin/d2f17683-6f69-483f-863d-10de466d4f8f.jpg" alt="Tse Long Tin carrying the ball forward">
+              <img src="img/tse-long-tin/tse-long-tin-ball-progression.jpg" alt="Tse Long Tin carrying the ball forward">
               <figcaption>Ball progression under pressure</figcaption>
             </figure>
           </a>
-          <a class="photo-card" href="img/tse-long-tin/d9ae7658-b968-4f28-9cf8-6dd556cb5d71.jpg" target="_blank" rel="noopener">
+          <a class="photo-card" href="img/tse-long-tin/tse-long-tin-club-match-action.jpg" data-lightbox>
             <figure>
-              <img src="img/tse-long-tin/d9ae7658-b968-4f28-9cf8-6dd556cb5d71.jpg" alt="Tse Long Tin competing in club match action">
+              <img src="img/tse-long-tin/tse-long-tin-club-match-action.jpg" alt="Tse Long Tin competing in club match action">
               <figcaption>Club competition</figcaption>
             </figure>
           </a>
-          <a class="photo-card" href="img/tse-long-tin/PHOTO-2026-04-27-21-32-10.jpg" target="_blank" rel="noopener">
+          <a class="photo-card" href="img/tse-long-tin/tse-long-tin-school-aerial-duel.jpg" data-lightbox>
             <figure>
-              <img src="img/tse-long-tin/PHOTO-2026-04-27-21-32-10.jpg" alt="Tse Long Tin contesting an aerial ball">
+              <img src="img/tse-long-tin/tse-long-tin-school-aerial-duel.jpg" alt="Tse Long Tin contesting an aerial ball">
               <figcaption>Aerial contest</figcaption>
             </figure>
           </a>
@@ -1016,42 +1366,42 @@
         </header>
 
         <div class="photo-leads">
-          <a class="photo-card" href="img/tse-long-tin/WhatsApp Image 2026-06-03 at 11.25.26 PM.jpeg" target="_blank" rel="noopener">
+          <a class="photo-card" href="img/tse-long-tin/tse-long-tin-hong-kong-team-portrait.jpg" data-lightbox>
             <figure>
-              <img src="img/tse-long-tin/WhatsApp Image 2026-06-03 at 11.25.26 PM.jpeg" alt="Portrait of Tse Long Tin in Hong Kong representative kit">
+              <img src="img/tse-long-tin/tse-long-tin-hong-kong-team-portrait.jpg" alt="Portrait of Tse Long Tin in Hong Kong representative kit">
               <figcaption>Hong Kong representative football</figcaption>
             </figure>
           </a>
-          <a class="photo-card" href="img/tse-long-tin/WhatsApp Image 2026-06-03 at 9.00.49 PM.jpeg" target="_blank" rel="noopener">
+          <a class="photo-card" href="img/tse-long-tin/tse-long-tin-hong-kong-match-control.jpg" data-lightbox>
             <figure>
-              <img src="img/tse-long-tin/WhatsApp Image 2026-06-03 at 9.00.49 PM.jpeg" alt="Tse Long Tin in representative match action">
+              <img src="img/tse-long-tin/tse-long-tin-hong-kong-match-control.jpg" alt="Tse Long Tin in representative match action">
               <figcaption>Representative match action</figcaption>
             </figure>
           </a>
         </div>
 
         <div class="photo-milestones">
-          <a class="photo-card" href="img/tse-long-tin/3b6dbce2-7364-45d1-8475-fb01d601fc03.jpg" target="_blank" rel="noopener">
+          <a class="photo-card" href="img/tse-long-tin/tse-long-tin-100m-sprint.jpg" data-lightbox>
             <figure>
-              <img src="img/tse-long-tin/3b6dbce2-7364-45d1-8475-fb01d601fc03.jpg" alt="Tse Long Tin competing in a sprint event">
+              <img src="img/tse-long-tin/tse-long-tin-100m-sprint.jpg" alt="Tse Long Tin competing in a sprint event">
               <figcaption>Athletic performance</figcaption>
             </figure>
           </a>
-          <a class="photo-card" href="img/tse-long-tin/823a084d-2770-4b2f-aaa9-ef98a9067a30.jpg" target="_blank" rel="noopener">
+          <a class="photo-card" href="img/tse-long-tin/tse-long-tin-inter-school-team-award.jpg" data-lightbox>
             <figure>
-              <img src="img/tse-long-tin/823a084d-2770-4b2f-aaa9-ef98a9067a30.jpg" alt="Inter-school team achievement photograph">
+              <img src="img/tse-long-tin/tse-long-tin-inter-school-team-award.jpg" alt="Inter-school team achievement photograph">
               <figcaption>Inter-school team achievement</figcaption>
             </figure>
           </a>
-          <a class="photo-card" href="img/tse-long-tin/1de6675f-0dc9-444d-96ba-941d419f5e1f.jpg" target="_blank" rel="noopener">
+          <a class="photo-card" href="img/tse-long-tin/tse-long-tin-club-aerial-challenge.jpg" data-lightbox>
             <figure>
-              <img src="img/tse-long-tin/1de6675f-0dc9-444d-96ba-941d419f5e1f.jpg" alt="Tse Long Tin contesting an aerial ball in club competition">
+              <img src="img/tse-long-tin/tse-long-tin-club-aerial-challenge.jpg" alt="Tse Long Tin contesting an aerial ball in club competition">
               <figcaption>Set-piece and aerial action</figcaption>
             </figure>
           </a>
-          <a class="photo-card" href="img/tse-long-tin/WhatsApp Image 2026-06-03 at 11.25.27 2PM.jpeg" target="_blank" rel="noopener">
+          <a class="photo-card" href="img/tse-long-tin/tse-long-tin-kitchee-distribution.jpg" data-lightbox>
             <figure>
-              <img src="img/tse-long-tin/WhatsApp Image 2026-06-03 at 11.25.27 2PM.jpeg" alt="Tse Long Tin playing the ball during club training or competition">
+              <img src="img/tse-long-tin/tse-long-tin-kitchee-distribution.jpg" alt="Tse Long Tin playing the ball during club training or competition">
               <figcaption>Club development environment</figcaption>
             </figure>
           </a>
@@ -1066,5 +1416,20 @@
       </footer>
     </section>
   </main>
+
+  <dialog class="photo-lightbox" id="photo-lightbox" aria-label="Photo viewer">
+    <div class="lightbox-layout">
+      <span class="lightbox-count" id="lightbox-count" aria-live="polite"></span>
+      <button class="lightbox-button lightbox-close" type="button" aria-label="Close photo viewer">×</button>
+      <button class="lightbox-button lightbox-prev" type="button" aria-label="Previous photo">‹</button>
+      <figure class="lightbox-figure">
+        <div class="lightbox-image-wrap">
+          <img class="lightbox-image" alt="">
+        </div>
+        <figcaption class="lightbox-caption"></figcaption>
+      </figure>
+      <button class="lightbox-button lightbox-next" type="button" aria-label="Next photo">›</button>
+    </div>
+  </dialog>
 </body>
 </html>
