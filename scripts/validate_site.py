@@ -42,9 +42,11 @@ def local_path(reference: str) -> Path | None:
 
 def main() -> int:
     errors: list[str] = []
+    profile_source = PROFILE.read_text(encoding="utf-8")
+    language_source = (ROOT / "assets" / "tse-long-tin-profile.js").read_text(encoding="utf-8")
 
     parser = ProfileParser()
-    parser.feed(PROFILE.read_text(encoding="utf-8"))
+    parser.feed(profile_source)
 
     for reference in parser.references:
         path = local_path(reference)
@@ -60,6 +62,26 @@ def main() -> int:
         errors.append(f"Expected 4 printable pages, found {parser.page_count}")
     if parser.lightbox_count != 11:
         errors.append(f"Expected 11 lightbox photos, found {parser.lightbox_count}")
+
+    representative_section = profile_source.partition("<h2>Representative Experience</h2>")[2].partition("<h2>Club Honours</h2>")[0]
+    representative_seasons = [representative_section.find(season) for season in ("2026–27", "2025–26", "2023–24")]
+    if any(index < 0 for index in representative_seasons) or representative_seasons != sorted(representative_seasons):
+        errors.append("Representative seasons are not sorted newest to oldest")
+
+    club_section = profile_source.partition("<h2>Documented Club Record</h2>")[2].partition("</section>")[0]
+    club_teams = re.findall(r"<td>(Kitchee U\d+)</td>", club_section)
+    if club_teams != ["Kitchee U16", "Kitchee U16", "Kitchee U14"]:
+        errors.append("Club records do not list the older age team first within a season")
+
+    training_section = profile_source.partition("<h2>Typical Training Exposure</h2>")[2].partition("</section>")[0]
+    training_order = [training_section.find(label) for label in ("Hong Kong Team", "Club (Kitchee)", "Junior High School")]
+    if any(index < 0 for index in training_order) or training_order != sorted(training_order):
+        errors.append("Training exposure is not ordered Hong Kong, club, then junior high school")
+
+    combined_source = profile_source + language_source
+    for forbidden in ("(DBS)", "（DBS）", "JHS"):
+        if forbidden in combined_source:
+            errors.append(f"Deprecated wording remains: {forbidden}")
 
     if errors:
         print("Site validation failed:", file=sys.stderr)

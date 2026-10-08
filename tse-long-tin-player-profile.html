@@ -290,58 +290,76 @@
       break-inside: avoid;
     }
 
-    .timeline {
-      margin: 0;
-      padding: 0;
-      list-style: none;
+    .representative-groups {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 3px;
     }
 
-    .timeline li {
-      position: relative;
-      margin-left: 5px;
-      padding: 0 0 5px 17px;
-      border-left: 1px solid #cfd5da;
+    .representative-group {
+      display: grid;
+      grid-template-columns: 18mm 1fr;
+      gap: 7px;
+      padding: 6px 7px;
+      border-top: 1px solid var(--line);
     }
 
-    .timeline li:last-child {
-      padding-bottom: 0;
-      border-left-color: transparent;
+    .representative-group:first-child {
+      border-top: 0;
     }
 
-    .timeline li::before {
-      position: absolute;
-      top: 4px;
-      left: -5px;
-      width: 9px;
-      height: 9px;
-      content: "";
-      background: var(--paper);
-      border: 3px solid var(--accent);
-      border-radius: 50%;
-    }
-
-    .timeline time {
-      display: block;
-      margin-bottom: 1px;
+    .representative-season {
       color: var(--accent-dark);
-      font-size: 0.62rem;
+      font-size: 0.65rem;
       font-weight: 850;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
     }
 
-    .timeline strong {
-      display: block;
+    .representative-team + .representative-team {
+      margin-top: 5px;
+      padding-top: 5px;
+      border-top: 1px solid var(--line);
+    }
+
+    .representative-team h3 {
+      margin: 0;
       color: var(--deep);
-      font-size: 0.83rem;
+      font-size: 0.79rem;
       line-height: 1.25;
     }
 
-    .timeline p {
-      margin: 2px 0 0;
+    .representative-role {
+      margin: 1px 0 0;
       color: var(--muted);
-      font-size: 0.74rem;
+      font-size: 0.68rem;
+      line-height: 1.25;
+    }
+
+    .representative-events {
+      margin: 4px 0 0;
+      padding: 0 0 0 14px;
+      color: #3f4953;
+      font-size: 0.67rem;
       line-height: 1.3;
+    }
+
+    .representative-events time,
+    .representative-events strong,
+    .representative-events span {
+      display: block;
+    }
+
+    .representative-events time {
+      color: var(--accent-dark);
+      font-size: 0.6rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .representative-events strong {
+      color: var(--deep);
+      font-weight: 700;
     }
 
     table {
@@ -442,10 +460,6 @@
     .records-page th,
     .records-page td {
       padding: 3px 4px;
-    }
-
-    .records-page .timeline li {
-      padding-bottom: 3px;
     }
 
     .records-page .school-context,
@@ -1098,28 +1112,50 @@
           <div>
             <section class="section">
               <h2>Representative Experience</h2>
-              <ol class="timeline">
-                <li>
-                  <time>September 2026</time>
-                  <strong>Hong Kong U15 Representative Team</strong>
-                  <p>Regular squad member · Starting XI.</p>
-                </li>
-                <li>
-                  <time>August 2026</time>
-                  <strong>Phoenix Cup — International Youth Football Elite Tournament, Chengdu</strong>
-                  <p>Hong Kong U15 Representative Team · 1st Runner-up.</p>
-                </li>
-                <li>
-                  <time>September 2025</time>
-                  <strong>Guangdong–Hong Kong–Macau Youth Football Exchange Programme</strong>
-                  <p>Hong Kong U14 · Two matches · 1st Runner-up.</p>
-                </li>
-                <li>
-                  <time>Futsal representative experience</time>
-                  <strong>2025–26 · Hong Kong U16 Futsal Team</strong>
-                  <p>2023–24 · Hong Kong U14 Futsal Team.</p>
-                </li>
-              </ol>
+              <div class="representative-groups">
+                <article class="representative-group">
+                  <div class="representative-season">2026–27</div>
+                  <div>
+                    <section class="representative-team">
+                      <h3>Hong Kong U15 Representative Team</h3>
+                      <p class="representative-role">Regular squad member · Starting XI</p>
+                      <ul class="representative-events">
+                        <li>
+                          <time>August 2026</time>
+                          <strong>Phoenix Cup — International Youth Football Elite Tournament, Chengdu</strong>
+                          <span>1st Runner-up</span>
+                        </li>
+                      </ul>
+                    </section>
+                  </div>
+                </article>
+                <article class="representative-group">
+                  <div class="representative-season">2025–26</div>
+                  <div>
+                    <section class="representative-team">
+                      <h3>Hong Kong U16 Futsal Team</h3>
+                    </section>
+                    <section class="representative-team">
+                      <h3>Hong Kong U14 Representative Team</h3>
+                      <ul class="representative-events">
+                        <li>
+                          <time>September 2025</time>
+                          <strong>Guangdong–Hong Kong–Macau Youth Football Exchange Programme</strong>
+                          <span>Two matches · 1st Runner-up</span>
+                        </li>
+                      </ul>
+                    </section>
+                  </div>
+                </article>
+                <article class="representative-group">
+                  <div class="representative-season">2023–24</div>
+                  <div>
+                    <section class="representative-team">
+                      <h3>Hong Kong U14 Futsal Team</h3>
+                    </section>
+                  </div>
+                </article>
+              </div>
             </section>
 
             <section class="section">
@@ -1177,14 +1213,14 @@
                   </tr>
                   <tr>
                     <td>2025–26</td>
-                    <td>Kitchee U14</td>
-                    <td class="number">20</td>
+                    <td>Kitchee U16</td>
+                    <td class="number">14</td>
                     <td>1</td>
                   </tr>
                   <tr>
                     <td>2025–26</td>
-                    <td>Kitchee U16</td>
-                    <td class="number">14</td>
+                    <td>Kitchee U14</td>
+                    <td class="number">20</td>
                     <td>1</td>
                   </tr>
                 </tbody>
@@ -1194,16 +1230,16 @@
 
           <div>
             <section class="section">
-              <h2>Hong Kong Inter-School Football</h2>
+              <h2>Hong Kong Junior High School Football</h2>
               <div class="school-context">
                 <strong>Hong Kong-wide Junior High School — Top Division</strong>
-                JHS Years 1–2. Official HKSSF designation: Division One, Boys C Grade.
+                Junior High School Years 1–2. Official HKSSF designation: Division One, Boys C Grade.
               </div>
               <div class="transfer-line">
                 <time>September 2026</time>
-                <span><strong>School transfer:</strong> Diocesan Boys' School (DBS), Hong Kong's all-time leading inter-school football champion.</span>
+                <span><strong>School transfer:</strong> Diocesan Boys' School, Hong Kong's all-time leading inter-school football champion.</span>
               </div>
-              <table class="season-table" aria-label="Inter-school football achievements by season">
+              <table class="season-table" aria-label="Junior high school football achievements by season">
                 <thead>
                   <tr>
                     <th>Season</th>
@@ -1237,7 +1273,7 @@
                 <thead>
                   <tr>
                     <th>Season</th>
-                    <th>Event · Hong Kong-wide JHS Division One</th>
+                    <th>Event · Hong Kong-wide Junior High School Division One</th>
                     <th>Result</th>
                   </tr>
                 </thead>
@@ -1275,16 +1311,16 @@
               <h2>Typical Training Exposure</h2>
               <div class="training-list">
                 <div class="training-row">
-                  <strong>Kitchee</strong>
+                  <strong>Hong Kong Team</strong>
+                  <span>3–7 days per call-up, approximately 4–6 call-ups per year</span>
+                </div>
+                <div class="training-row">
+                  <strong>Club (Kitchee)</strong>
                   <span>4 training sessions per week</span>
                 </div>
                 <div class="training-row">
-                  <strong>School football</strong>
+                  <strong>Junior High School</strong>
                   <span>2 training sessions per week</span>
-                </div>
-                <div class="training-row">
-                  <strong>Hong Kong team</strong>
-                  <span>3–7 days per call-up, approximately 4–6 call-ups per year</span>
                 </div>
               </div>
             </section>
