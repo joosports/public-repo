@@ -83,6 +83,14 @@ def main() -> int:
         if forbidden in combined_source:
             errors.append(f"Deprecated wording remains: {forbidden}")
 
+    for required in ("ツェ・ロンティン", "センターバック／ボランチ", "主力メンバー／先発出場"):
+        if required not in language_source:
+            errors.append(f"Required professional Japanese wording is missing: {required}")
+
+    for forbidden in ("守備的ミッドフィールダー", "レギュラー登録", "成長・育成プロフィール"):
+        if forbidden in language_source:
+            errors.append(f"Literal Japanese wording remains: {forbidden}")
+
     if errors:
         print("Site validation failed:", file=sys.stderr)
         for error in errors:
