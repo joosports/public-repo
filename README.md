@@ -6,14 +6,15 @@ Public-facing JOOSPORTS profiles and supporting assets.
 
 - [Tse Long Tin — Player Profile](tse-long-tin-player-profile.html)
 
-## Version 2 — English draft
+## Version 2 — bilingual draft
 
 - [Tse Long Tin — Player Profile, Version 2](tse-long-tin-player-profile-v2.html)
-- Uses the revised English content and links to the two-minute football highlights.
-- Football-first layout: slim branding, player fact strip, clickable video thumbnail and print-friendly highlights QR code.
+- Uses the supplied English and Japanese content and links to the two-minute football highlights.
+- Slim branding, clickable video thumbnail, print-friendly highlights QR code and modern language/print controls.
 - Two core profile/record pages followed by two supporting photo pages; record tables highlight the 2025–26 U16 appearances and separate football information from athletics.
-- Japanese content is intentionally empty pending supplied/approved wording. English is the default; `?lang=ja` selects the empty Japanese view.
-- Responsive layout, 11-photo lightbox, and four-page **A4** printing / browser PDF saving.
+- Both languages include DBS sports recruitment and starting status, the school-football record and the distinction between DBS's previous championships and Long Tin's own participation. Supplied section sequence is retained, without page-number labels or intermediate profile footers.
+- English is the default; `?lang=ja` (or `?lang=jp`) selects Japanese. Language selection also updates the print control and photo-viewer labels.
+- Responsive layout, an 11-photo lightbox in each language, and four-page **A4** printing / browser PDF saving for the selected language only.
 - Version 2 has separate CSS and JavaScript; the original profile and the site's default landing page are unchanged.
 
 The original profile provides:

@@ -7,11 +7,13 @@
   const status = document.querySelector("#language-status");
   const printButton = document.querySelector("#print-button");
   const lightbox = document.querySelector("#photo-lightbox");
-  const photos = [...english.querySelectorAll("[data-lightbox]")];
+  const allPhotos = [...document.querySelectorAll(".profile-copy [data-lightbox]")];
+  let photos = [...english.querySelectorAll("[data-lightbox]")];
   const image = lightbox.querySelector(".lightbox-image");
   const caption = lightbox.querySelector(".lightbox-caption");
   const count = lightbox.querySelector(".lightbox-count");
   let photoIndex = 0;
+  let preparingPrint = false;
 
   const closeLightbox = () => lightbox.close();
   const showPhoto = (index) => {
@@ -19,7 +21,7 @@
     const photo = photos[photoIndex];
     image.src = photo.href;
     image.alt = photo.querySelector("img").alt;
-    caption.textContent = photo.querySelector("figcaption").textContent;
+    caption.textContent = [...photo.querySelector("figcaption").children].map((part) => part.textContent).join("\n");
     count.textContent = `${photoIndex + 1} / ${photos.length}`;
   };
 
@@ -30,11 +32,17 @@
     english.hidden = isJapanese;
     japanese.hidden = !isJapanese;
     document.documentElement.lang = isJapanese ? "ja" : "en";
-    printButton.disabled = isJapanese;
-    status.textContent = isJapanese
-      ? "Japanese content is intentionally empty for now. Select English to view or print version 2."
-      : "Version 2 — English. Japanese content is intentionally empty for now.";
-    document.title = "Tse Long Tin (謝朗天) | Player Profile — Version 2" + (isJapanese ? " — Japanese pending" : "");
+    photos = [...(isJapanese ? japanese : english).querySelectorAll("[data-lightbox]")];
+    photoIndex = 0;
+    printButton.disabled = preparingPrint;
+    printButton.querySelector("span").textContent = isJapanese ? "印刷 / PDF保存" : "Print / Save PDF";
+    document.querySelector('label[for="language-select"]').textContent = isJapanese ? "言語" : "Language";
+    lightbox.setAttribute("aria-label", isJapanese ? "写真ビューアー" : "Photo viewer");
+    lightbox.querySelector(".lightbox-close").setAttribute("aria-label", isJapanese ? "写真を閉じる" : "Close photo viewer");
+    lightbox.querySelector(".lightbox-prev").setAttribute("aria-label", isJapanese ? "前の写真" : "Previous photo");
+    lightbox.querySelector(".lightbox-next").setAttribute("aria-label", isJapanese ? "次の写真" : "Next photo");
+    status.textContent = isJapanese ? "日本語を表示しています。" : "English selected.";
+    document.title = isJapanese ? "謝朗天 (Tse Long Tin) | 選手プロフィール — Version 2" : "Tse Long Tin (謝朗天) | Player Profile — Version 2";
     if (updateAddress) {
       const url = new URL(window.location.href);
       url.searchParams.set("lang", isJapanese ? "ja" : "en");
@@ -46,25 +54,31 @@
   setLanguage(new URLSearchParams(window.location.search).get("lang"));
   languageSelect.addEventListener("change", () => setLanguage(languageSelect.value, true));
   printButton.addEventListener("click", async () => {
-    if (english.hidden) return;
+    if (preparingPrint) return;
+    const selectedProfile = languageSelect.value === "ja" ? japanese : english;
     if (lightbox.open) closeLightbox();
+    preparingPrint = true;
     printButton.disabled = true;
     try {
       await document.fonts.ready;
-      await Promise.all([...english.querySelectorAll("img")].map((photo) => photo.decode()));
-      if (!english.hidden) window.print();
+      await Promise.all([...selectedProfile.querySelectorAll("img")].map((photo) => photo.decode()));
+      if (!selectedProfile.hidden) window.print();
     } catch (_) {
-      status.textContent = "A profile image could not be loaded. Check the assets and img folders before printing.";
+      status.textContent = languageSelect.value === "ja"
+        ? "画像を読み込めませんでした。印刷前に画像ファイルをご確認ください。"
+        : "A profile image could not be loaded. Check the assets and img folders before printing.";
     } finally {
-      printButton.disabled = english.hidden;
+      preparingPrint = false;
+      printButton.disabled = false;
     }
   });
 
-  photos.forEach((photo, index) => {
+  allPhotos.forEach((photo) => {
     photo.addEventListener("click", (event) => {
       if (typeof lightbox.showModal !== "function") return; // Keep the full-image link as a fallback.
       event.preventDefault();
-      showPhoto(index);
+      photos = [...photo.closest("main").querySelectorAll("[data-lightbox]")];
+      showPhoto(photos.indexOf(photo));
       lightbox.showModal();
       document.body.classList.add("lightbox-open");
     });
