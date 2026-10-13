@@ -42,7 +42,7 @@
     lightbox.querySelector(".lightbox-prev").setAttribute("aria-label", isJapanese ? "前の写真" : "Previous photo");
     lightbox.querySelector(".lightbox-next").setAttribute("aria-label", isJapanese ? "次の写真" : "Next photo");
     status.textContent = isJapanese ? "日本語を表示しています。" : "English selected.";
-    document.title = isJapanese ? "謝朗天 (Tse Long Tin) | 選手プロフィール — Version 2" : "Tse Long Tin (謝朗天) | Player Profile — Version 2";
+    document.title = isJapanese ? "謝朗天 (Tse Long Tin) | 選手プロフィール" : "Tse Long Tin (謝朗天) | Player Profile";
     if (updateAddress) {
       const url = new URL(window.location.href);
       url.searchParams.set("lang", isJapanese ? "ja" : "en");
@@ -50,7 +50,7 @@
     }
   };
 
-  // Default to English, independent of version 1's saved language or browser locale.
+  // Default to English unless a language is explicitly requested in the URL.
   setLanguage(new URLSearchParams(window.location.search).get("lang"));
   languageSelect.addEventListener("change", () => setLanguage(languageSelect.value, true));
   printButton.addEventListener("click", async () => {

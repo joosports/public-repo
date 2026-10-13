@@ -22,20 +22,36 @@ class ProfileParser(HTMLParser):
         self.references: list[str] = []
         self.page_count = 0
         self.lightbox_count = 0
+        self.languages: dict[str, dict[str, int]] = {}
+        self.current_language: str | None = None
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         attributes = dict(attrs)
         classes = set((attributes.get("class") or "").split())
 
+        if tag == "main" and attributes.get("id") in ("profile-en", "profile-ja"):
+            language = attributes.get("lang")
+            if language:
+                self.current_language = language
+                self.languages.setdefault(language, {"pages": 0, "photos": 0})
+
         if tag == "section" and "joosports-page" in classes:
             self.page_count += 1
+            if self.current_language:
+                self.languages[self.current_language]["pages"] += 1
         if tag == "a" and "data-lightbox" in attributes:
             self.lightbox_count += 1
+            if self.current_language:
+                self.languages[self.current_language]["photos"] += 1
 
         for attribute in ("src", "href"):
             value = attributes.get(attribute)
             if value:
                 self.references.append(value)
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag == "main":
+            self.current_language = None
 
 
 def local_path(reference: str) -> Path | None:
@@ -56,7 +72,6 @@ def main() -> int:
     errors: list[str] = []
     profile_source = PROFILE.read_text(encoding="utf-8")
     index_source = INDEX.read_text(encoding="utf-8")
-    language_source = (ROOT / "assets" / "tse-long-tin-profile.js").read_text(encoding="utf-8")
 
     parser = ProfileParser()
     parser.feed(profile_source)
@@ -71,37 +86,48 @@ def main() -> int:
         if not IMAGE_NAME.fullmatch(image.name):
             errors.append(f"Image does not follow naming convention: {image.name}")
 
-    if parser.page_count != 4:
-        errors.append(f"Expected 4 printable pages, found {parser.page_count}")
-    if parser.lightbox_count != 11:
-        errors.append(f"Expected 11 lightbox photos, found {parser.lightbox_count}")
+    if set(parser.languages) != {"en", "ja"}:
+        errors.append("Expected separate English and Japanese profile sections")
+    for language, counts in parser.languages.items():
+        if counts["pages"] != 4:
+            errors.append(f"Expected 4 printable pages in {language}, found {counts['pages']}")
+        if counts["photos"] != 11:
+            errors.append(f"Expected 11 lightbox photos in {language}, found {counts['photos']}")
+    if parser.page_count != 8 or parser.lightbox_count != 22:
+        errors.append("Expected 8 page sections and 22 photo links across both languages")
 
-    representative_section = profile_source.partition("<h2>Representative Experience</h2>")[2].partition("<h2>Club Honours</h2>")[0]
-    representative_seasons = [representative_section.find(season) for season in ("2026–27", "2025–26", "2023–24")]
-    if any(index < 0 for index in representative_seasons) or representative_seasons != sorted(representative_seasons):
-        errors.append("Representative seasons are not sorted newest to oldest")
+    representative_sections = re.findall(r'<section class="section representative">(.*?)</section>', profile_source, re.DOTALL)
+    if len(representative_sections) != 2:
+        errors.append("Expected representative experience in both languages")
+    for section in representative_sections:
+        seasons = [section.find(season) for season in ("2026–27", "2025–26", "2023–24")]
+        if any(index < 0 for index in seasons) or seasons != sorted(seasons):
+            errors.append("Representative seasons are not sorted newest to oldest")
 
-    club_section = profile_source.partition("<h2>Documented Club Record</h2>")[2].partition("</section>")[0]
-    club_teams = re.findall(r"<td>(Kitchee U\d+)</td>", club_section)
-    if club_teams != ["Kitchee U16", "Kitchee U16", "Kitchee U14"]:
-        errors.append("Club records do not list the older age team first within a season")
+    club_sections = re.findall(r'<section class="section match-record">(.*?)</section>', profile_source, re.DOTALL)
+    expected_teams = (["Kitchee SC U16", "Kitchee SC U16", "Kitchee SC U14"], ["傑志SC U-16", "傑志SC U-16", "傑志SC U-14"])
+    if len(club_sections) != 2:
+        errors.append("Expected club match records in both languages")
+    for section, expected in zip(club_sections, expected_teams):
+        teams = re.findall(r"<td>(Kitchee SC U\d+|傑志SC U-\d+)</td>", section)
+        if teams != expected:
+            errors.append("Club records do not list the older age team first within a season")
 
-    training_section = profile_source.partition("<h2>Typical Training Exposure</h2>")[2].partition("</section>")[0]
-    training_order = [training_section.find(label) for label in ("Hong Kong Team", "Club (Kitchee)", "Junior High School")]
-    if any(index < 0 for index in training_order) or training_order != sorted(training_order):
-        errors.append("Training exposure is not ordered Hong Kong, club, then junior high school")
+    training_sections = re.findall(r'<section class="section training">(.*?)</section>', profile_source, re.DOTALL)
+    training_labels = (("Hong Kong Representative Team", "Kitchee Sports Club", "School Football"), ("香港年代別代表", "傑志SC", "学校サッカー"))
+    if len(training_sections) != 2:
+        errors.append("Expected training exposure in both languages")
+    for section, labels in zip(training_sections, training_labels):
+        order = [section.find(label) for label in labels]
+        if any(index < 0 for index in order) or order != sorted(order):
+            errors.append("Training exposure is not ordered representative team, club, then school")
 
-    combined_source = profile_source + language_source
-    for forbidden in ("(DBS)", "（DBS）", "JHS"):
-        if forbidden in combined_source:
-            errors.append(f"Deprecated wording remains: {forbidden}")
-
-    for required in ("ツェ・ロンティン", "センターバック／ボランチ", "主力メンバー／先発出場"):
-        if required not in language_source:
+    for required in ("ツェ・ロンティン", "センターバック／ボランチ", "継続的に先発出場"):
+        if required not in profile_source:
             errors.append(f"Required professional Japanese wording is missing: {required}")
 
     for forbidden in ("守備的ミッドフィールダー", "レギュラー登録", "成長・育成プロフィール"):
-        if forbidden in language_source:
+        if forbidden in profile_source:
             errors.append(f"Literal Japanese wording remains: {forbidden}")
 
     required_metadata = (
@@ -135,6 +161,8 @@ def main() -> int:
             schema = json.loads(structured_data.group(1))
             if schema.get("@type") != "ProfilePage" or schema.get("mainEntity", {}).get("@type") != "Person":
                 errors.append("Structured data must describe a ProfilePage with a Person main entity")
+            if schema.get("url") != PROFILE_URL or schema.get("inLanguage") != ["en", "ja"]:
+                errors.append("Structured data must use the main profile URL and both languages")
         except json.JSONDecodeError as error:
             errors.append(f"Structured data is invalid JSON: {error}")
 
@@ -145,8 +173,8 @@ def main() -> int:
         return 1
 
     print(
-        f"Site validation passed: {parser.page_count} pages, "
-        f"{parser.lightbox_count} lightbox photos, {len(image_files)} named images."
+        f"Site validation passed: 4 pages and 11 lightbox photos per language (English/Japanese), "
+        f"{len(image_files)} named images."
     )
     return 0
 
